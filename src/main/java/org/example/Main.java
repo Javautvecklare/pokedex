@@ -1,17 +1,13 @@
 package org.example;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        Type myType = Type.FIRE;
-        System.out.println("My type: " + myType);
+        Scanner scanner = new Scanner(System.in);                                         // Bygg en avläsare för tangentbordet
 
-        for (Type t : Type.values()) {   // for-each från L3: "för varje Type t bland alla värden"
-            System.out.println(t);
-        }
-
+        String name = InputHelper.readText(scanner, "Namn: ", 20);                        // InputHelper. = hämta verktyget i klassen InputHelper
+        int choice = InputHelper.readIntInRange(scanner, "Val (1-4): ", 1, 4);            // Frågar tills talet är 1-4
+        System.out.println("Hej " + name + ", du valde " + choice + ".");                       // Visa resultatet
     }
 }
