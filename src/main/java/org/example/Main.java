@@ -1,13 +1,12 @@
 package org.example;
 
-import java.util.Scanner;
-
 public class Main {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);                                         // Bygg en avläsare för tangentbordet
+        Attack thunder = new Attack("Thunderbolt", 40, 100, Type.ELECTRIC);
+        System.out.println(thunder.name + " " + thunder.baseDamage + " " + thunder.accuracy + " " + thunder.type);
 
-        String name = InputHelper.readText(scanner, "Namn: ", 20);                        // InputHelper. = hämta verktyget i klassen InputHelper
-        int choice = InputHelper.readIntInRange(scanner, "Val (1-4): ", 1, 4);            // Frågar tills talet är 1-4
-        System.out.println("Hej " + name + ", du valde " + choice + ".");                       // Visa resultatet
+        // Krasch-test: tomt namn, negativ skada, 500 % träffsäkerhet och ingen typ
+        Attack bad = new Attack("", -5, 500, null);
+        System.out.println("Byggd ändå: '" + bad.name + "' " + bad.baseDamage);
     }
 }
