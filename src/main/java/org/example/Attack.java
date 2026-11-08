@@ -16,7 +16,7 @@ public class Attack {
         Validator.validateDamage(baseDamage);
         Validator.validateAccuracy(accuracy);
         Validator.validateType(type);
-        this.name = name.trim();                  // this. behövs eftersom parametern heter samma som fältet
+        this.name = name.trim();                  // this. behövs eftersom parametern heter samma som fältet. trim() tar bort all leading och trailing space.
         this.baseDamage = baseDamage;
         this.accuracy = accuracy;
         this.type = type;
