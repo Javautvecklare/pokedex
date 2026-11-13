@@ -1,15 +1,16 @@
 package org.example;
 
+import java.util.ArrayList;
+
 public class Main {
     public static void main(String[] args) {
-        Attack thunder = new Attack("Thunderbolt", 40, 100, Type.ELECTRIC);
-        System.out.println(thunder.name + " " + thunder.baseDamage + " " + thunder.accuracy + " " + thunder.type);
+        ArrayList<Pokemon> pokedex = SeedData.createSeed();
 
-        try {
-            Attack bad = new Attack("", -5, 500, null);
-            System.out.println("Byggd ändå: " + bad.name);   // Krasch-test - ska ej se detta om jag skrivit rätT!
-        } catch (InvalidPokemonException e) {
-            System.out.println("Fel: " + e.getMessage());
+        for (Pokemon p : pokedex) {
+            System.out.printf("%-12s | Typ: %-8s | HP: %d/%d%n", p.name, p.type, p.currentHp, p.maxHp);
+            for (Attack a : p.attacks) {
+                System.out.println("   - " + a.name + " (" + a.baseDamage + " dmg)");
+            }
         }
     }
 }
