@@ -43,4 +43,29 @@ public class Validator {
             throw new InvalidPokemonException("En Pokémon måste ha 1 till 4 attacker, har: " + count);
         }
     }
+
+    public static void validatePokemon(Pokemon p) {
+        if (p == null) {
+            throw new InvalidPokemonException("Tom post i filen.");
+        }
+        validateName(p.name);
+        validateType(p.type);
+        validateHp(p.maxHp);
+        if (p.currentHp < 0 || p.currentHp > p.maxHp) {
+            throw new InvalidPokemonException("Aktuellt HP måste vara mellan 0 och max HP för " + p.name);
+        }
+        if (p.attacks == null) {
+            throw new InvalidPokemonException("Attacker saknas för " + p.name);
+        }
+        validateAttackCount(p.attacks.size());
+        for (Attack a : p.attacks) {
+            if (a == null) {
+                throw new InvalidPokemonException("Tom attack för " + p.name);
+            }
+            validateName(a.name);
+            validateDamage(a.baseDamage);
+            validateAccuracy(a.accuracy);
+            validateType(a.type);
+        }
+    }
 }
