@@ -10,6 +10,8 @@ public class Attack {
     public int accuracy;     // i procent
     public Type type;        // samma enum som Pokémon, så att typerna aldrig kan skilja sig åt
 
+    public Attack() {
+    }
     // Konstruktorn kräver alla värden, så att en attack aldrig skapas halvfärdig. Nu även med kontroll före tilldelning, så ingen ogiltig attack kan skapas.
     public Attack(String name, int baseDamage, int accuracy, Type type) {   // Konstruktorns rubrik. Parametrar innanför parantensen
         Validator.validateName(name);

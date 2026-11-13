@@ -12,6 +12,8 @@ public class Pokemon {
     public int currentHp;
     public ArrayList<Attack> attacks = new ArrayList<>();   // börjar tom, attacker läggs till efteråt
 
+    public Pokemon() {
+    }
     // Alla regler kontrolleras före tilldelningen, så att ingen ogiltig Pokémon kan skapas
     public Pokemon(String name, Type type, int maxHp) {
         Validator.validateName(name);
