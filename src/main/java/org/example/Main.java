@@ -15,11 +15,24 @@ public class Main {
             switch (choice) {
                 case 1 -> showAll(pokedex);
                 case 2 -> addPokemon(scanner, pokedex);
+                case 4 -> removePokemon(scanner, pokedex);
                 case 8 -> running = false;
                 default -> System.out.println("Det här menyvalet är inte klart än.");   // tills resten är byggt
             }
         }
         System.out.println("Hej då!");
+    }
+
+    private static void removePokemon(Scanner scanner, ArrayList<Pokemon> pokedex) {
+        if (pokedex.isEmpty()) {
+            System.out.println("Pokédexen är tom.");
+        } else {
+            showAll(pokedex);
+            int index = InputHelper.readIntInRange(scanner, "Vilken Pokémon vill du ta bort (nummer) ", 1, pokedex.size()) -1;
+            Pokemon removed = pokedex.get(index);
+            pokedex.remove(index);
+            System.out.println(removed.name + " togs bort.");
+        }
     }
 
     // Håller main kort: varje menyval har en egen metod
