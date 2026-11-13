@@ -15,30 +15,35 @@ public class Main {
 
         boolean running = true;
         while (running) {                                          // loopen körs tills användaren väljer Avsluta
-            printMenu();
-            int choice = InputHelper.readIntInRange(scanner, "Välj (1-9): ", 1, 9);   // alla val går genom samma säkra inläsning
-            switch (choice) {
-                case 1 -> showAll(pokedex);
-                case 2 -> addPokemon(scanner, pokedex);
-                case 3 -> editPokemon(scanner, pokedex);
-                case 4 -> removePokemon(scanner, pokedex);
-                case 5 -> JsonStorage.saveJson(savePath, pokedex);
-                case 6 -> {
-                    ArrayList<Pokemon> loaded = JsonStorage.loadJson(savePath);
-                    if (loaded.isEmpty()) {                            // tom lista betyder att inget kunde laddas, så vi behåller det vi har
-                        System.out.println("Ingen data laddades. Din nuvarande lista behålls.");
-                    } else {
-                        pokedex = loaded;
-                        System.out.println("Laddade " + pokedex.size() + " Pokémon från filen.");
+            try {
+                printMenu();
+                int choice = InputHelper.readIntInRange(scanner, "Välj (1-9): ", 1, 9);   // alla val går genom samma säkra inläsning
+                switch (choice) {
+                    case 1 -> showAll(pokedex);
+                    case 2 -> addPokemon(scanner, pokedex);
+                    case 3 -> editPokemon(scanner, pokedex);
+                    case 4 -> removePokemon(scanner, pokedex);
+                    case 5 -> JsonStorage.saveJson(savePath, pokedex);
+                    case 6 -> {
+                        ArrayList<Pokemon> loaded = JsonStorage.loadJson(savePath);
+                        if (loaded.isEmpty()) {                            // tom lista betyder att inget kunde laddas, så vi behåller det vi har
+                            System.out.println("Ingen data laddades. Din nuvarande lista behålls.");
+                        } else {
+                            pokedex = loaded;
+                            System.out.println("Laddade " + pokedex.size() + " Pokémon från filen.");
+                        }
                     }
+                    case 7 -> {
+                        pokedex = SeedData.createSeed();
+                        System.out.println("Pokédexen är återställd till seed-data.");
+                    }
+                    case 8 -> running = false;
+                    case 9 -> searchPokemon(scanner, pokedex);
+                    default -> System.out.println("Det här menyvalet är inte klart än.");   // tills resten är byggt
                 }
-                case 7 -> {
-                    pokedex = SeedData.createSeed();
-                    System.out.println("Pokédexen är återställd till seed-data.");
-                }
-                case 8 -> running = false;
-                case 9 -> searchPokemon(scanner, pokedex);
-                default -> System.out.println("Det här menyvalet är inte klart än.");   // tills resten är byggt
+            } catch (Exception e) {
+                System.out.println("Oväntat fel, programmet avslutas kontrollerat: " + e.getMessage());
+                running = false;
             }
         }
         JsonStorage.saveJson(savePath, pokedex);
