@@ -57,11 +57,7 @@ public class Main {
             Pokemon pokemon = new Pokemon(name, type, maxHp);
             for (int i = 1; i <= attackCount; i++) {
                 System.out.println("Attack " + i + ":");
-                String attackName = InputHelper.readText(scanner, "  Namn: ", 30);
-                int damage = InputHelper.readIntInRange(scanner, "  Skada (1-300): ", 1, 300);
-                int accuracy = InputHelper.readIntInRange(scanner, "  Träffsäkerhet (1-100): ", 1, 100);
-                Type attackType = chooseType(scanner);
-                pokemon.attacks.add(new Attack(attackName, damage, accuracy, attackType));
+                pokemon.attacks.add(readAttack(scanner));
             }
             pokedex.add(pokemon);
             System.out.println(pokemon.name + " lades till.");
@@ -83,5 +79,14 @@ public class Main {
             default -> Type.NORMAL;
         };
     }
+
+    public static Attack readAttack(Scanner scanner) {
+        String name = InputHelper.readText(scanner, "  Namn: ", 30);
+        int damage = InputHelper.readIntInRange(scanner, "  Skada (1-300): ", 1, 300);
+        int accuracy = InputHelper.readIntInRange(scanner, "  Träffsäkerhet (1-100): ", 1, 100);
+        Type type = chooseType(scanner);
+        return new Attack(name, damage, accuracy, type);     // kastar InvalidPokemonException om något ändå är fel
+    }
+
 
 }
