@@ -15,6 +15,7 @@ public class Main {
             switch (choice) {
                 case 1 -> showAll(pokedex);
                 case 2 -> addPokemon(scanner, pokedex);
+                case 3 -> editPokemon(scanner, pokedex);
                 case 4 -> removePokemon(scanner, pokedex);
                 case 8 -> running = false;
                 case 9 -> searchPokemon(scanner, pokedex);
@@ -22,6 +23,71 @@ public class Main {
             }
         }
         System.out.println("Hej då!");
+    }
+
+    public static void editPokemon(Scanner scanner, ArrayList<Pokemon> pokedex) {
+        if (pokedex.isEmpty()) {
+            System.out.println("Pokédexen är tom.");
+        } else {
+            showAll(pokedex);
+            int index = InputHelper.readIntInRange(scanner, "Vilken Pokémon vill du redigera (nummer)? ", 1, pokedex.size()) - 1;
+            Pokemon p = pokedex.get(index);
+
+            boolean editing = true;
+            while (editing) {
+                System.out.println();
+                System.out.println("Redigerar " + p.name);
+                System.out.println("1. Ändra namn  2. Ändra HP  3. Ändra typ  4. Lägg till attack  5. Ta bort attack  6. Klar");
+                int choice = InputHelper.readIntInRange(scanner, "Välj (1-6): ", 1, 6);
+                try {
+                    switch (choice) {
+                        case 1 -> changeName(scanner, p);
+                        case 2 -> changeHp(scanner, p);
+                        case 3 -> p.type = chooseType(scanner);
+                        case 4 -> addAttackTo(scanner, p);
+                        case 5 -> removeAttackFrom(scanner, p);
+                        case 6 -> editing = false;
+                    }
+                } catch (InvalidPokemonException e) {          // samma regler som vid skapande, så ingen ogiltig ändring kan sparas
+                    System.out.println("Ändringen sparades inte: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    public static void changeName(Scanner scanner, Pokemon p) {
+        String newName = InputHelper.readText(scanner, "Nytt namn: ", 30);
+        Validator.validateName(newName);                       // kollas före tilldelningen
+        p.name = newName;
+    }
+
+    public static void changeHp(Scanner scanner, Pokemon p) {
+        int newHp = InputHelper.readIntInRange(scanner, "Ny max HP (1-999): ", 1, 999);
+        Validator.validateHp(newHp);
+        p.maxHp = newHp;
+        if (p.currentHp > p.maxHp) {                           // aktuellt HP får aldrig vara högre än max
+            p.currentHp = p.maxHp;
+        }
+    }
+
+    public static void addAttackTo(Scanner scanner, Pokemon p) {
+        if (p.attacks.size() >= 4) {                           // en Pokémon har högst 4 attacker
+            System.out.println("En Pokémon kan ha högst 4 attacker.");
+        } else {
+            p.attacks.add(readAttack(scanner));
+        }
+    }
+
+    public static void removeAttackFrom(Scanner scanner, Pokemon p) {
+        if (p.attacks.size() <= 1) {                           // en Pokémon måste ha minst 1 attack
+            System.out.println("En Pokémon måste ha minst 1 attack.");
+        } else {
+            for (int i = 0; i < p.attacks.size(); i++) {
+                System.out.println((i + 1) + ". " + p.attacks.get(i).name);
+            }
+            int index = InputHelper.readIntInRange(scanner, "Vilken attack vill du ta bort (nummer)? ", 1, p.attacks.size()) - 1;
+            p.attacks.remove(index);
+        }
     }
 
     public static void searchPokemon(Scanner scanner, ArrayList<Pokemon> pokedex) {
