@@ -2,11 +2,16 @@ package org.example;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.nio.file.Path;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Pokemon> pokedex = SeedData.createSeed();
+        Path savePath = Path.of("pokedex.json");
+        ArrayList<Pokemon> pokedex = JsonStorage.loadJson(savePath);
+        if (pokedex.isEmpty()) {
+            pokedex = SeedData.createSeed();
+        }
 
         boolean running = true;
         while (running) {                                          // loopen körs tills användaren väljer Avsluta
@@ -17,11 +22,26 @@ public class Main {
                 case 2 -> addPokemon(scanner, pokedex);
                 case 3 -> editPokemon(scanner, pokedex);
                 case 4 -> removePokemon(scanner, pokedex);
+                case 5 -> JsonStorage.saveJson(savePath, pokedex);
+                case 6 -> {
+                    ArrayList<Pokemon> loaded = JsonStorage.loadJson(savePath);
+                    if (loaded.isEmpty()) {                            // tom lista betyder att inget kunde laddas, så vi behåller det vi har
+                        System.out.println("Ingen data laddades. Din nuvarande lista behålls.");
+                    } else {
+                        pokedex = loaded;
+                        System.out.println("Laddade " + pokedex.size() + " Pokémon från filen.");
+                    }
+                }
+                case 7 -> {
+                    pokedex = SeedData.createSeed();
+                    System.out.println("Pokédexen är återställd till seed-data.");
+                }
                 case 8 -> running = false;
                 case 9 -> searchPokemon(scanner, pokedex);
                 default -> System.out.println("Det här menyvalet är inte klart än.");   // tills resten är byggt
             }
         }
+        JsonStorage.saveJson(savePath, pokedex);
         System.out.println("Hej då!");
     }
 
