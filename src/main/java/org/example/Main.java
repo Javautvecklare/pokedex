@@ -11,19 +11,42 @@ public class Main {
         boolean running = true;
         while (running) {                                          // loopen körs tills användaren väljer Avsluta
             printMenu();
-            int choice = InputHelper.readIntInRange(scanner, "Välj (1-8): ", 1, 8);   // alla val går genom samma säkra inläsning
+            int choice = InputHelper.readIntInRange(scanner, "Välj (1-9): ", 1, 9);   // alla val går genom samma säkra inläsning
             switch (choice) {
                 case 1 -> showAll(pokedex);
                 case 2 -> addPokemon(scanner, pokedex);
                 case 4 -> removePokemon(scanner, pokedex);
                 case 8 -> running = false;
+                case 9 -> searchPokemon(scanner, pokedex);
                 default -> System.out.println("Det här menyvalet är inte klart än.");   // tills resten är byggt
             }
         }
         System.out.println("Hej då!");
     }
 
-    private static void removePokemon(Scanner scanner, ArrayList<Pokemon> pokedex) {
+    public static void searchPokemon(Scanner scanner, ArrayList<Pokemon> pokedex) {
+        String name = InputHelper.readText(scanner, "Sök namn: ", 30);
+        try {
+            Pokemon p = findByName(pokedex, name);
+            System.out.printf("%-12s | Typ: %-8s | HP: %d/%d%n", p.name, p.type, p.currentHp, p.maxHp);
+            for (Attack a : p.attacks) {
+                System.out.println("   - " + a.name + " (" + a.baseDamage + " dmg, " + a.accuracy + " % träff, " + a.type + ")");
+            }
+        } catch (PokemonNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static Pokemon findByName(ArrayList<Pokemon> pokedex, String name) {
+        for (Pokemon p : pokedex) {
+            if (p.name.toUpperCase().equals(name.toUpperCase())) {   // toUpperCase så att "pikachu" och "Pikachu" räknas som samma
+                return p;
+            }
+        }
+        throw new PokemonNotFoundException("Hittade ingen Pokémon med namnet " + name);
+    }
+
+    public static void removePokemon(Scanner scanner, ArrayList<Pokemon> pokedex) {
         if (pokedex.isEmpty()) {
             System.out.println("Pokédexen är tom.");
         } else {
@@ -47,6 +70,7 @@ public class Main {
         System.out.println("6. Ladda från fil");
         System.out.println("7. Återställ till seed-data");
         System.out.println("8. Avsluta");
+        System.out.println("9. Sök Pokémon");
     }
 
     public static void showAll(ArrayList<Pokemon> pokedex) {
