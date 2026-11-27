@@ -50,6 +50,30 @@ public class JsonStorage {
         }
         return result;
     }
+    
+    public static void saveStats(Path path, Stats stats) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            mapper.writerWithDefaultPrettyPrinter().writeValue(path.toFile(), stats);
+        } catch (IOException e) {
+            System.out.println("Kunde inte spara statistiken: " + e.getMessage());
+        }
+    }
+
+    // Saknad fil är inget fel (inga strider spelade än). Korrupt fil ger tom statistik i stället för en krasch.
+    public static Stats loadStats(Path path) {
+        if (!Files.exists(path)) {
+            return new Stats();
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            Stats stats = mapper.readValue(path.toFile(), Stats.class);
+            return stats == null ? new Stats() : stats;            // filen kan innehålla bara ordet null
+        } catch (IOException e) {
+            System.out.println("Kunde inte ladda statistiken (korrupt eller fel format). Börjar om med tom statistik.");
+            return new Stats();
+        }
+    }
 
     // Jackson lindar in våra egna felmeddelanden, så vi plockar fram det ursprungliga om det finns
     private static String reason(Exception e) {

@@ -39,3 +39,5 @@ build/
 .DS_Store
 
 pokedex.json
+
+stats.json
