@@ -44,28 +44,30 @@ public class Validator {
         }
     }
 
+    public static void validateSpeed(int speed) {
+        if (speed < 1 || speed > 200) {                                    // Fart avgör vem som anfaller först
+            throw new InvalidPokemonException("Farten måste vara mellan 1 och 200, fick: " + speed);
+        }
+    }
+
+    // Kontrollerar en hel Pokémon, t.ex. efter laddning från fil där konstruktorn aldrig körts
     public static void validatePokemon(Pokemon p) {
         if (p == null) {
             throw new InvalidPokemonException("Tom post i filen.");
         }
-        validateName(p.name);
-        validateType(p.type);
-        validateHp(p.maxHp);
-        if (p.currentHp < 0 || p.currentHp > p.maxHp) {
-            throw new InvalidPokemonException("Aktuellt HP måste vara mellan 0 och max HP för " + p.name);
+        validateName(p.getName());
+        validateType(p.getType());
+        validateHp(p.getMaxHp());
+        validateSpeed(p.getSpeed());
+        if (p.getCurrentHp() < 0 || p.getCurrentHp() > p.getMaxHp()) {
+            throw new InvalidPokemonException("Aktuellt HP måste vara mellan 0 och max HP för " + p.getName());
         }
-        if (p.attacks == null) {
-            throw new InvalidPokemonException("Attacker saknas för " + p.name);
-        }
-        validateAttackCount(p.attacks.size());
-        for (Attack a : p.attacks) {
-            if (a == null) {
-                throw new InvalidPokemonException("Tom attack för " + p.name);
-            }
-            validateName(a.name);
-            validateDamage(a.baseDamage);
-            validateAccuracy(a.accuracy);
-            validateType(a.type);
+        validateAttackCount(p.getAttacks().size());
+        for (Attack a : p.getAttacks()) {
+            validateName(a.getName());
+            validateDamage(a.getBaseDamage());
+            validateAccuracy(a.getAccuracy());
+            validateType(a.getType());
         }
     }
 }

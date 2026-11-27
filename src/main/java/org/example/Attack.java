@@ -2,25 +2,58 @@ package org.example;
 
 /**
  * En attack som en Pokémon kan använda.
+ * Fälten är private och ändras bara via validerade settrar, så ingen ogiltig attack kan finnas.
  */
 public class Attack {
-    // Klassens FÄLT
-    public String name;
-    public int baseDamage;
-    public int accuracy;     // i procent
-    public Type type;        // samma enum som Pokémon, så att typerna aldrig kan skilja sig åt
+    private String name;
+    private int baseDamage;
+    private int accuracy;     // i procent
+    private Type type;        // samma enum som Pokémon, så att typerna aldrig kan skilja sig åt
 
+    // Jackson skapar först ett tomt objekt och fyller sedan i värdena via settrarna
     public Attack() {
     }
-    // Konstruktorn kräver alla värden, så att en attack aldrig skapas halvfärdig. Nu även med kontroll före tilldelning, så ingen ogiltig attack kan skapas.
-    public Attack(String name, int baseDamage, int accuracy, Type type) {   // Konstruktorns rubrik. Parametrar innanför parantensen
+
+    public Attack(String name, int baseDamage, int accuracy, Type type) {
+        setName(name);
+        setBaseDamage(baseDamage);
+        setAccuracy(accuracy);
+        setType(type);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
         Validator.validateName(name);
+        this.name = name.trim();
+    }
+
+    public int getBaseDamage() {
+        return baseDamage;
+    }
+
+    public void setBaseDamage(int baseDamage) {
         Validator.validateDamage(baseDamage);
-        Validator.validateAccuracy(accuracy);
-        Validator.validateType(type);
-        this.name = name.trim();                  // this. behövs eftersom parametern heter samma som fältet. trim() tar bort all leading och trailing space.
         this.baseDamage = baseDamage;
+    }
+
+    public int getAccuracy() {
+        return accuracy;
+    }
+
+    public void setAccuracy(int accuracy) {
+        Validator.validateAccuracy(accuracy);
         this.accuracy = accuracy;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        Validator.validateType(type);
         this.type = type;
     }
 }

@@ -61,14 +61,14 @@ public class Main {
             boolean editing = true;
             while (editing) {
                 System.out.println();
-                System.out.println("Redigerar " + p.name);
+                System.out.println("Redigerar " + p.getName());
                 System.out.println("1. Ändra namn  2. Ändra HP  3. Ändra typ  4. Lägg till attack  5. Ta bort attack  6. Klar");
                 int choice = InputHelper.readIntInRange(scanner, "Välj (1-6): ", 1, 6);
                 try {
                     switch (choice) {
                         case 1 -> changeName(scanner, p);
                         case 2 -> changeHp(scanner, p);
-                        case 3 -> p.type = chooseType(scanner);
+                        case 3 -> p.setType(chooseType(scanner));
                         case 4 -> addAttackTo(scanner, p);
                         case 5 -> removeAttackFrom(scanner, p);
                         case 6 -> editing = false;
@@ -82,36 +82,31 @@ public class Main {
 
     public static void changeName(Scanner scanner, Pokemon p) {
         String newName = InputHelper.readText(scanner, "Nytt namn: ", 30);
-        Validator.validateName(newName);                       // kollas före tilldelningen
-        p.name = newName;
+        p.setName(newName);
     }
 
     public static void changeHp(Scanner scanner, Pokemon p) {
         int newHp = InputHelper.readIntInRange(scanner, "Ny max HP (1-999): ", 1, 999);
-        Validator.validateHp(newHp);
-        p.maxHp = newHp;
-        if (p.currentHp > p.maxHp) {                           // aktuellt HP får aldrig vara högre än max
-            p.currentHp = p.maxHp;
-        }
+        p.setMaxHp(newHp);                                     // settern validerar och ser till att aktuellt HP inte överstiger max
     }
 
     public static void addAttackTo(Scanner scanner, Pokemon p) {
-        if (p.attacks.size() >= 4) {                           // en Pokémon har högst 4 attacker
+        if (p.getAttacks().size() >= 4) {                           // en Pokémon har högst 4 attacker
             System.out.println("En Pokémon kan ha högst 4 attacker.");
         } else {
-            p.attacks.add(readAttack(scanner));
+            p.addAttack(readAttack(scanner));
         }
     }
 
     public static void removeAttackFrom(Scanner scanner, Pokemon p) {
-        if (p.attacks.size() <= 1) {                           // en Pokémon måste ha minst 1 attack
+        if (p.getAttacks().size() <= 1) {                           // en Pokémon måste ha minst 1 attack
             System.out.println("En Pokémon måste ha minst 1 attack.");
         } else {
-            for (int i = 0; i < p.attacks.size(); i++) {
-                System.out.println((i + 1) + ". " + p.attacks.get(i).name);
+            for (int i = 0; i < p.getAttacks().size(); i++) {
+                System.out.println((i + 1) + ". " + p.getAttacks().get(i).getName());
             }
-            int index = InputHelper.readIntInRange(scanner, "Vilken attack vill du ta bort (nummer)? ", 1, p.attacks.size()) - 1;
-            p.attacks.remove(index);
+            int index = InputHelper.readIntInRange(scanner, "Vilken attack vill du ta bort (nummer)? ", 1, p.getAttacks().size()) - 1;
+            p.removeAttack(index);
         }
     }
 
@@ -119,9 +114,9 @@ public class Main {
         String name = InputHelper.readText(scanner, "Sök namn: ", 30);
         try {
             Pokemon p = findByName(pokedex, name);
-            System.out.printf("%-12s | Typ: %-8s | HP: %d/%d%n", p.name, p.type, p.currentHp, p.maxHp);
-            for (Attack a : p.attacks) {
-                System.out.println("   - " + a.name + " (" + a.baseDamage + " dmg, " + a.accuracy + " % träff, " + a.type + ")");
+            System.out.printf("%-12s | Typ: %-8s | HP: %d/%d%n", p.getName(), p.getType(), p.getCurrentHp(), p.getMaxHp());
+            for (Attack a : p.getAttacks()) {
+                System.out.println("   - " + a.getName() + " (" + a.getBaseDamage() + " dmg, " + a.getAccuracy() + " % träff, " + a.getType() + ")");
             }
         } catch (PokemonNotFoundException e) {
             System.out.println(e.getMessage());
@@ -130,7 +125,7 @@ public class Main {
 
     public static Pokemon findByName(ArrayList<Pokemon> pokedex, String name) {
         for (Pokemon p : pokedex) {
-            if (p.name.toUpperCase().equals(name.toUpperCase())) {   // toUpperCase så att "pikachu" och "Pikachu" räknas som samma
+            if (p.getName().toUpperCase().equals(name.toUpperCase())) {   // toUpperCase så att "pikachu" och "Pikachu" räknas som samma
                 return p;
             }
         }
@@ -145,7 +140,7 @@ public class Main {
             int index = InputHelper.readIntInRange(scanner, "Vilken Pokémon vill du ta bort (nummer) ", 1, pokedex.size()) -1;
             Pokemon removed = pokedex.get(index);
             pokedex.remove(index);
-            System.out.println(removed.name + " togs bort.");
+            System.out.println(removed.getName() + " togs bort.");
         }
     }
 
@@ -171,7 +166,7 @@ public class Main {
             for (int i = 0; i < pokedex.size(); i++) {
                 Pokemon p = pokedex.get(i);
                 System.out.printf("%d. %-12s | Typ: %-8s | HP: %d/%d | Attacker: %d%n",
-                        i + 1, p.name, p.type, p.currentHp, p.maxHp, p.attacks.size());
+                        i + 1, p.getName(), p.getType(), p.getCurrentHp(), p.getMaxHp(), p.getAttacks().size());
             }
         }
     }
@@ -185,10 +180,10 @@ public class Main {
             Pokemon pokemon = new Pokemon(name, type, maxHp);
             for (int i = 1; i <= attackCount; i++) {
                 System.out.println("Attack " + i + ":");
-                pokemon.attacks.add(readAttack(scanner));
+                pokemon.addAttack(readAttack(scanner));
             }
             pokedex.add(pokemon);
-            System.out.println(pokemon.name + " lades till.");
+            System.out.println(pokemon.getName() + " lades till.");
         } catch (InvalidPokemonException e) {
             System.out.println("Kunde inte skapa Pokémon: " + e.getMessage());
         }
